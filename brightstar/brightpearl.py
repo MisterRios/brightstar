@@ -195,6 +195,32 @@ class API(object):
         
         return products_data
 
+    def get_product_prices(self, request_range, price_list):
+        """
+        returns a list of tuples: product ids and prices
+        """
+
+        prices_uris = self.get_options_uris_by_service("prices", request_range)
+
+        prices_data = list()
+
+        for each_uri in prices_uris:
+            price_list_uri = "{}/price-list/{}".format(each_uri, price_list)
+            print(price_list_uri)
+            response_data = self.get(price_list_uri)
+            if response_data['errors']:
+                # return empty set if single item called with no prices
+                pass 
+            else:
+                for each_product in range(len(response_data['response'])):
+                    prices_data.append(
+                        (
+                            response_data['response'][each_product]['productId'],
+                            response_data['response'][each_product]['priceLists'][0]['quantityPrice']['1']
+                        )
+                        )
+
+        return prices_data
 
     def list_of_request_ranges(self, request_range):
         """
