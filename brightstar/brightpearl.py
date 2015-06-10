@@ -153,7 +153,7 @@ class API(object):
         response is goods out note reference number
         """
 
-        goods_out_note_uri = "{}warehouse-service/order/{}/goods-note/goods-out/".format(
+        goods_out_note_uri = "{}warehouse-service/order/{}/goods-note/goods-out".format(
                 self.uri, order
                 )
         return self.post(goods_out_note_uri, data)
