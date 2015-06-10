@@ -52,14 +52,12 @@ class API(object):
         """
 
         
-        authentication_string = json.dumps({"apiAccountCredentials" : {"emailAddress":username, "password":password }})
+        authentication_string = json.dumps(
+                {"apiAccountCredentials" : 
+                    {"emailAddress":username, "password":password }
+                }
+                    )
         authentication_data = authentication_string.encode('utf-8')
-
-        data = json.dumps({'apiAccountCredentials': 
-                {'emailAddress': username,
-                 'password': password}
-                 })
-
 
         response = requests.post(self.authentication_uri, data=authentication_data, headers=self.staff_authentication_headers)
 
@@ -148,6 +146,17 @@ class API(object):
 
         service_uri = "{0}{1}-service/{1}".format(self.uri, service)
         return self.post(service_uri, data) 
+
+    def post_goods_out(self, order, data):
+        """
+        shortcut to post a new goods out note
+        response is goods out note reference number
+        """
+
+        goods_out_note_uri = "{}warehouse-service/order/{}/goods-note/goods-out/".format(
+                self.uri, order
+                )
+        return self.post(goods_out_note_uri, data)
 
 
     def get_options_uris_by_service(self, service, reference_number):
