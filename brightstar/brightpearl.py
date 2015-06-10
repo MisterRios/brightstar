@@ -156,7 +156,8 @@ class API(object):
         goods_out_note_uri = "{}warehouse-service/order/{}/goods-note/goods-out".format(
                 self.uri, order
                 )
-        return self.post(goods_out_note_uri, data)
+        response = self.post(goods_out_note_uri, data)
+        return response.json()['response'][0]
 
 
     def get_options_uris_by_service(self, service, reference_number):
