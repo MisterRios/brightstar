@@ -157,7 +157,7 @@ class API(object):
                 self.uri, order
                 )
         response = self.post(goods_out_note_uri, data)
-        return response.json()['response'][0]
+        return response['response'][0]
 
 
     def get_options_uris_by_service(self, service, reference_number):
