@@ -303,3 +303,6 @@ class API(object):
 
     def order_lookup(self, method, parameter):
         return self.lookup_service("order", method, parameter)
+    
+    def product_lookup(self, method, parameter):
+        return self.lookup_service("product", method, parameter)
