@@ -315,4 +315,4 @@ class API(object):
         """
 
         warehouse_service_uri = "{}warehouse-service/product-availability/{}".format(self.uri, request_range)
-        return get(warehouse_service_uri)
+        return self.get(warehouse_service_uri)
