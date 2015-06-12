@@ -306,3 +306,13 @@ class API(object):
     
     def product_lookup(self, method, parameter):
         return self.lookup_service("product", method, parameter)
+
+
+    def get_stock_levels(self, request_range):
+        """
+        returns stock levels for products
+        comma separated or range
+        """
+
+        warehouse_service_uri = "{}warehouse-service/product-availability/{}".format(self.uri, request_range)
+        return get(warehouse_service_uri)
