@@ -113,13 +113,13 @@ class BasicMethodsTest(unittest.TestCase):
                 "brightpearl-app-ref": 'testcompany_testapp',
                 "brightpearl-account-token": 'f4dtgpjl89z0aftgpj89z0a'
                 },
-            body= json.dumps({"response": "postt_it"}),
+            body= json.dumps({"response": "options"}),
             status= 200,
                 )
 
         self.assertEqual(
             self.instance.options(self.instance.uri),
-            {"response": "postt_it"}
+            {"response": "options"}
             )
 
 
