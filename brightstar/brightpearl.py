@@ -71,7 +71,7 @@ class API(object):
         }
 
 
-    def get_uri(self, service, resource, reference_number=None, include=None, exclude=None):
+    def get_uri(self, service, resource, reference_number=None):
         """
         service/resource as string: i.e. "orders", "products"
         allows custom uris for calls not included in self.process_uri
@@ -82,12 +82,7 @@ class API(object):
         if reference_number is None:
             return "{}{}".format(self.uri, resource_fragment)
 
-        self.extension = ""
-        if include or exclude:
-            self.extension = "?includeOptional=%s&excludeOptional=%s" % (
-                include, exclude)
-
-        return "{}{}{}{}".format(self.uri, resource_fragment, reference_number, self.extension)
+        return "{}{}{}".format(self.uri, resource_fragment, reference_number)
 
 
 
