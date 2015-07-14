@@ -73,7 +73,54 @@ class BasicMethodsTest(unittest.TestCase):
 
     @httpretty.activate
     def test_put(self):
-        pass
+        httpretty.register_uri(httpretty.PUT, 
+            'https://ws-eu1.brightpearl.com/2.0.0/testcompany/',
+            headers={
+                "brightpearl-app-ref": 'testcompany_testapp',
+                "brightpearl-account-token": 'f4dtgpjl89z0aftgpj89z0a'
+                },
+            body= json.dumps({"response": "put_it"}),
+            status= 200,
+                )
+
+        self.assertEqual(
+            self.instance.put(self.instance.uri, data={"first":"second"}),
+            {"response": "put_it"}
+            )
+
+    @httpretty.activate
+    def test_post(self):
+        httpretty.register_uri(httpretty.POST, 
+            'https://ws-eu1.brightpearl.com/2.0.0/testcompany/',
+            headers={
+                "brightpearl-app-ref": 'testcompany_testapp',
+                "brightpearl-account-token": 'f4dtgpjl89z0aftgpj89z0a'
+                },
+            body= json.dumps({"response": "postt_it"}),
+            status= 200,
+                )
+
+        self.assertEqual(
+            self.instance.post(self.instance.uri, data={"first":"second"}),
+            {"response": "postt_it"}
+            )
+
+    @httpretty.activate
+    def test_post(self):
+        httpretty.register_uri(httpretty.OPTIONS, 
+            'https://ws-eu1.brightpearl.com/2.0.0/testcompany/',
+            headers={
+                "brightpearl-app-ref": 'testcompany_testapp',
+                "brightpearl-account-token": 'f4dtgpjl89z0aftgpj89z0a'
+                },
+            body= json.dumps({"response": "postt_it"}),
+            status= 200,
+                )
+
+        self.assertEqual(
+            self.instance.options(self.instance.uri),
+            {"response": "postt_it"}
+            )
 
 
 if __name__ == '__main__':
