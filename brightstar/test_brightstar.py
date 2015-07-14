@@ -144,6 +144,27 @@ class GetMethodsTest(unittest.TestCase):
             "brightpearl-staff-token": "St4ffT0K3n"}
             )
 
+    @httpretty.activate
+    def test_get_uri(self):
+        """this is not an actual get request per se,
+        it really only builds uris based on parameters"""
+
+        product_251_uri = self.instance.get_uri("product", "product", 251)
+        self.assertEqual(
+            product_251_uri,
+            "https://ws-eu1.brightpearl.com/2.0.0/testcompany/product-service/product/251")
+
+        order_500500_uri = self.instance.get_uri("order", "order", "500500-500570")
+        self.assertEqual(
+            order_500500_uri,
+            "https://ws-eu1.brightpearl.com/2.0.0/testcompany/order-service/order/500500-500570"
+            )
+
+        base_contact_uri = self.instance.get_uri("contact", "contact")
+        self.assertEqual(
+            base_contact_uri,
+            "https://ws-eu1.brightpearl.com/2.0.0/testcompany/contact-service/contact/"
+            )
 
 if __name__ == '__main__':
     unittest.main()
