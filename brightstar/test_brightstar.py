@@ -25,13 +25,27 @@ class InstantiationTest(unittest.TestCase):
         self.assertEqual(self.instance.app_ref, 'testcompany_testapp')
         self.assertEqual(self.instance.authentication_token, 
             'f4dtgpjl89z0aftgpj89z0a')
+
         self.assertIsNone(self.instance.staff_authentication_token)
+        self.assertEqual(self.instance.staff_authentication_headers, {
+                "brightpearl-app-ref": 'testcompany_testapp',
+                "Content-Type": "application/json"
+                }
+            )
+
+        self.assertEqual(self.instance.uri,
+                'https://ws-eu1.brightpearl.com/2.0.0/testcompany/'
+                )
+
+        self.assertEqual(self.instance.authentication_uri,
+                'https://ws-eu1.brightpearl.com/testcompany/authorise'
+                )
 
         self.assertEqual(
             self.instance.headers, {
-            "brightpearl-app-ref": 'testcompany_testapp',
-            "brightpearl-account-token": 'f4dtgpjl89z0aftgpj89z0a'
-            }
+                "brightpearl-app-ref": 'testcompany_testapp',
+                "brightpearl-account-token": 'f4dtgpjl89z0aftgpj89z0a'
+                }
             )
 
 
