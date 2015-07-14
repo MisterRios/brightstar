@@ -106,7 +106,7 @@ class BasicMethodsTest(unittest.TestCase):
             )
 
     @httpretty.activate
-    def test_post(self):
+    def test_options(self):
         httpretty.register_uri(httpretty.OPTIONS, 
             'https://ws-eu1.brightpearl.com/2.0.0/testcompany/',
             headers={
