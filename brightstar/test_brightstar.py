@@ -122,6 +122,28 @@ class BasicMethodsTest(unittest.TestCase):
             {"response": "options"}
             )
 
+class GetMethodsTest(unittest.TestCase):
+
+    def setUp(self):
+        self.instance = API(TEST_CONFIG)
+
+    @httpretty.activate  
+    def test_get_brightpearl_staff_token(self):
+
+        httpretty.register_uri(
+            httpretty.POST,
+            "https://ws-eu1.brightpearl.com/testcompany/authorise",
+            body=json.dumps({"response": "St4ffT0K3n"})
+            )
+
+        self.instance.get_brightpearl_staff_token("username", "password")
+
+        self.assertEqual(
+            self.instance.headers,
+            {"brightpearl-app-ref": "testcompany_testapp",
+            "brightpearl-staff-token": "St4ffT0K3n"}
+            )
+
 
 if __name__ == '__main__':
     unittest.main()
