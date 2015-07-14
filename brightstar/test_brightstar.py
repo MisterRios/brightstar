@@ -1,6 +1,6 @@
 import unittest
-import requests
 import httpretty
+import json
 from brightpearl import API
 
 TEST_CONFIG = { 'datacentre': 'eu1',
@@ -48,7 +48,32 @@ class InstantiationTest(unittest.TestCase):
                 }
             )
 
+class BasicMethodsTest(unittest.TestCase):
 
+    def setUp(self):
+        self.instance = API(TEST_CONFIG)
+
+    @httpretty.activate
+    def test_get(self):
+        
+        httpretty.register_uri(httpretty.GET, 
+            'https://ws-eu1.brightpearl.com/2.0.0/testcompany/',
+            headers={
+                "brightpearl-app-ref": 'testcompany_testapp',
+                "brightpearl-account-token": 'f4dtgpjl89z0aftgpj89z0a'
+                },
+            body= json.dumps({"response": "get_test_body"}),
+            status= 200,
+                )
+
+        self.assertEqual(
+            self.instance.get(self.instance.uri),
+            {"response": "get_test_body"}
+            )
+
+    @httpretty.activate
+    def test_put(self):
+        pass
 
 
 if __name__ == '__main__':
