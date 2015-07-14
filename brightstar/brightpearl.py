@@ -85,8 +85,6 @@ class API(object):
         return "{}{}{}".format(self.uri, resource_fragment, reference_number)
 
 
-
-
     def get_service_uri(self, service, reference_number=None):
         """
         generate uri for certain services in ALL_SERVICE
