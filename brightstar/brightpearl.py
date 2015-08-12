@@ -188,7 +188,7 @@ class API(object):
 
         sales_uris = self.get_options_uris_by_service("products", request_range
             )
-
+        print(sales_uris)
         products_data = list()
 
         for each_uri in sales_uris:
@@ -271,21 +271,23 @@ class API(object):
             )
         response = self.get(the_uri)
         
-        line_items = response['response']['results'][0]
-        if method == "SKU" or method == "EAN":
-            data = {
-                'product_id': line_items[0],
-                'product_name': line_items[1],
-                'sku': line_items[2],
-                'EAN': line_items[4],
-                'stock_tracked': line_items[7],
-                'category_code': line_items[11],
-                'product_group_id': line_items[12],
-            }
-            return data
+        if response['response']['results'] != []:
+            
+            line_items = response['response']['results'][0]
 
-        else:
-            return response['response']['results']
+            if method == "SKU" or method == "EAN":
+                data = {
+                    'product_id': line_items[0],
+                    'product_name': line_items[1],
+                    'sku': line_items[2],
+                    'EAN': line_items[4],
+                    'stock_tracked': line_items[7],
+                    'category_code': line_items[11],
+                    'product_group_id': line_items[12],
+                }
+                return data
+
+        return response['response']['results']
 
 
     def sku_lookup(self, sku_number):
