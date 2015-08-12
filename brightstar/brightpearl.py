@@ -188,7 +188,6 @@ class API(object):
 
         sales_uris = self.get_options_uris_by_service("products", request_range
             )
-        print(sales_uris)
         products_data = list()
 
         for each_uri in sales_uris:
