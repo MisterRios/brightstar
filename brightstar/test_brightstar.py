@@ -146,8 +146,10 @@ class GetMethodsTest(unittest.TestCase):
 
 
     def test_get_uri(self):
-        """this is not an actual get request per se,
-        it really only builds uris based on parameters"""
+        """
+        This is not an actual get request.
+        Instead, the method builds uris based on given parameters.
+        """
 
         product_251_uri = self.instance.get_uri("product", "product", 251)
         self.assertEqual(
