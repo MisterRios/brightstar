@@ -230,8 +230,9 @@ class API(object):
 
         for each_uri in suppliers_uri:
             response_data = self.get(each_uri + "/supplier")
-            for each_set_of_products in range(len(response_data['response'])):
-                suppliers_data.append(response_data['response'][each_set_of_products])
+            for single_response in response_data['response']:
+                print(single_response)
+                suppliers_data.append(single_response)
         
         return suppliers_data
 
