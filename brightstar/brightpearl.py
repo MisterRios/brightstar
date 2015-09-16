@@ -222,6 +222,20 @@ class API(object):
 
         return prices_data
 
+    def get_product_suppliers(self, request_range=""):
+        # code smell
+        suppliers_uri = self.get_options_uris_by_service("products", request_range
+            )
+        suppliers_data = list()
+
+        for each_uri in suppliers_uri:
+            response_data = self.get(each_uri + "/supplier")
+            for each_set_of_products in range(len(response_data['response'])):
+                suppliers_data.append(response_data['response'][each_set_of_products])
+        
+        return suppliers_data
+
+
     def list_of_request_ranges(self, request_range):
         """
         Used when OPTIONS cannot be requested.
