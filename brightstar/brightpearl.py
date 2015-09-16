@@ -226,13 +226,11 @@ class API(object):
         # code smell
         suppliers_uri = self.get_options_uris_by_service("products", request_range
             )
-        suppliers_data = list()
+        suppliers_data = dict()
 
         for each_uri in suppliers_uri:
             response_data = self.get(each_uri + "/supplier")
-            for single_response in response_data['response']:
-                print(single_response)
-                suppliers_data.append(single_response)
+            suppliers_data.update(response_data['response'])
         
         return suppliers_data
 
