@@ -1,5 +1,5 @@
 import unittest
-import httpretty
+import responses
 import json
 from brightpearl import API
 
@@ -53,15 +53,11 @@ class BasicMethodsTest(unittest.TestCase):
     def setUp(self):
         self.instance = API(TEST_CONFIG)
 
-    @httpretty.activate
+    @responses.activate
     def test_get(self):
         
-        httpretty.register_uri(httpretty.GET, 
+        responses.add(responses.GET, 
             'https://ws-eu1.brightpearl.com/2.0.0/testcompany/',
-            headers={
-                "brightpearl-app-ref": 'testcompany_testapp',
-                "brightpearl-account-token": 'f4dtgpjl89z0aftgpj89z0a'
-                },
             body= json.dumps({"response": "get_test_body"}),
             status= 200,
                 )
@@ -71,14 +67,10 @@ class BasicMethodsTest(unittest.TestCase):
             {"response": "get_test_body"}
             )
 
-    @httpretty.activate
+    @responses.activate
     def test_put(self):
-        httpretty.register_uri(httpretty.PUT, 
+        responses.add(responses.PUT, 
             'https://ws-eu1.brightpearl.com/2.0.0/testcompany/',
-            headers={
-                "brightpearl-app-ref": 'testcompany_testapp',
-                "brightpearl-account-token": 'f4dtgpjl89z0aftgpj89z0a'
-                },
             body= json.dumps({"response": "put_it"}),
             status= 200,
                 )
@@ -88,14 +80,10 @@ class BasicMethodsTest(unittest.TestCase):
             {"response": "put_it"}
             )
 
-    @httpretty.activate
+    @responses.activate
     def test_post(self):
-        httpretty.register_uri(httpretty.POST, 
+        responses.add(responses.POST, 
             'https://ws-eu1.brightpearl.com/2.0.0/testcompany/',
-            headers={
-                "brightpearl-app-ref": 'testcompany_testapp',
-                "brightpearl-account-token": 'f4dtgpjl89z0aftgpj89z0a'
-                },
             body= json.dumps({"response": "postt_it"}),
             status= 200,
                 )
@@ -105,14 +93,10 @@ class BasicMethodsTest(unittest.TestCase):
             {"response": "postt_it"}
             )
 
-    @httpretty.activate
+    @responses.activate
     def test_options(self):
-        httpretty.register_uri(httpretty.OPTIONS, 
+        responses.add(responses.OPTIONS, 
             'https://ws-eu1.brightpearl.com/2.0.0/testcompany/',
-            headers={
-                "brightpearl-app-ref": 'testcompany_testapp',
-                "brightpearl-account-token": 'f4dtgpjl89z0aftgpj89z0a'
-                },
             body= json.dumps({"response": "options"}),
             status= 200,
                 )
@@ -127,11 +111,11 @@ class GetMethodsTest(unittest.TestCase):
     def setUp(self):
         self.instance = API(TEST_CONFIG)
 
-    @httpretty.activate  
+    @responses.activate  
     def test_get_brightpearl_staff_token(self):
 
-        httpretty.register_uri(
-            httpretty.POST,
+        responses.add(
+            responses.POST,
             "https://ws-eu1.brightpearl.com/testcompany/authorise",
             body=json.dumps({"response": "St4ffT0K3n"})
             )
@@ -204,5 +188,3 @@ class GetMethodsTest(unittest.TestCase):
             self.instance.uri + "product-service/product-price/"
             )
 
-if __name__ == '__main__':
-    unittest.main()
