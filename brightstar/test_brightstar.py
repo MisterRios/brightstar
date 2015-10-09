@@ -188,3 +188,30 @@ class GetMethodsTest(unittest.TestCase):
             self.instance.uri + "product-service/product-price/"
             )
 
+class OrderSearchTest(unittest.TestCase):
+
+    def setUp(self):
+        self.instance = API(TEST_CONFIG)
+
+    @responses.activate
+    def test_order_lookup(self):
+        responses.add(responses.GET, 
+            'https://ws-eu1.brightpearl.com/2.0.0/testcompany/order-service/order-search?orderTypeId=2',
+            body= json.dumps(
+                {"reference": {},
+                 "response": {
+                    "metaData": {
+                        "resultsAvailable": 200,
+                        "resultsReturned": 200
+                    },
+                    "results": [[100001, 2, 120], [100002, 2, 121]]
+                 }
+                }
+            ),
+            status= 200,
+            match_querystring=True,
+        )
+
+        expected_results = [[100001, 2, 120], [100002, 2, 121]]
+        searched_orders = self.instance.order_lookup('orderTypeId',2)
+        assert searched_orders == expected_results 
