@@ -315,10 +315,10 @@ class API(object):
     def ean_lookup(self, ean_number):
         return self.lookup_service("product", {"EAN": ean_number})
 
-    def order_lookup(self, **kwargs):
+    def order_lookup(self, kwargs):
         return self.lookup_service("order", kwargs)
     
-    def product_lookup(self, **kwargs):
+    def product_lookup(self, kwargs):
         return self.lookup_service("product", kwargs)
 
 
