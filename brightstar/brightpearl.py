@@ -271,23 +271,28 @@ class API(object):
         return request_ranges
 
 
-    def lookup_service(self, service, method, parameter):
+    def lookup_service(self, service, **kwargs):
         """
         calls on the search functionality to lookup a product
         and return all information including product ID
         Will lookup sku by default
         """
+        methods = set()
+        the_uri = '{0}{1}-service/{1}-search?'.format(self.uri, service)
+            
+        for key, value in kwargs:
+                the_uri += '{}={}'.format(key, value)
+            if len(kwargs) > 1:
+                the_uri += '&'
 
-        the_uri = '{0}{1}-service/{1}-search?{2}={3}'.format(
-            self.uri, service, method, parameter
-            )
+        methods.add(key)       
         response = self.get(the_uri)
         
         if response['response']['results'] != []:
             
             line_items = response['response']['results'][0]
 
-            if method == "SKU" or method == "EAN":
+            if "SKU" in methods or "EAN" in methods:
                 data = {
                     'product_id': line_items[0],
                     'product_name': line_items[1],
@@ -298,21 +303,23 @@ class API(object):
                     'product_group_id': line_items[12],
                 }
                 return data
+        else:
+            raise KeyError("response returned no data")
 
         return response['response']['results']
 
 
     def sku_lookup(self, sku_number):
-        return self.lookup_service("product", "SKU", sku_number)
+        return self.lookup_service("product", {"SKU": sku_number})
 
     def ean_lookup(self, ean_number):
-        return self.lookup_service("product", "EAN", ean_number)
+        return self.lookup_service("product", {"EAN": ean_number})
 
-    def order_lookup(self, method, parameter):
-        return self.lookup_service("order", method, parameter)
+    def order_lookup(self, **kwargs):
+        return self.lookup_service("order", **kwargs={})
     
     def product_lookup(self, method, parameter):
-        return self.lookup_service("product", method, parameter)
+        return self.lookup_service("product", **kwargs={})
 
 
     def get_stock_levels(self, request_range):
