@@ -316,10 +316,10 @@ class API(object):
         return self.lookup_service("product", {"EAN": ean_number})
 
     def order_lookup(self, **kwargs):
-        return self.lookup_service("order", **kwargs={})
+        return self.lookup_service("order", kwargs)
     
-    def product_lookup(self, method, parameter):
-        return self.lookup_service("product", **kwargs={})
+    def product_lookup(self, **kwargs):
+        return self.lookup_service("product", kwargs)
 
 
     def get_stock_levels(self, request_range):
