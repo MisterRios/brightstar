@@ -281,7 +281,7 @@ class API(object):
         the_uri = '{0}{1}-service/{1}-search?'.format(self.uri, service)
             
         for key, value in kwargs:
-                the_uri += '{}={}'.format(key, value)
+            the_uri += '{}={}'.format(key, value)
             if len(kwargs) > 1:
                 the_uri += '&'
 
