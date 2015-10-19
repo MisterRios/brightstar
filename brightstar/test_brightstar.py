@@ -2,6 +2,7 @@ import unittest
 import responses
 import json
 from brightpearl import API
+from brightpearl import Tools
 
 TEST_CONFIG = { 'datacentre': 'eu1',
                 'api_version': '2.0.0',
@@ -213,5 +214,80 @@ class OrderSearchTest(unittest.TestCase):
         )
 
         expected_results = [[100001, 2, 120], [100002, 2, 121]]
-        searched_orders = self.instance.order_lookup('orderTypeId',2)
+        searched_orders = self.instance.order_lookup({'orderTypeId': 2})
         assert searched_orders == expected_results 
+
+
+class TestGrouper:
+
+    def test_grouper_one_chunk(self):
+        test_list = [1, 2, 3, 4, 5, 6]
+        expected_chunks = [[1, 2, 3, 4, 5, 6]]
+        returned_chunks = Tools.grouper(test_list, chunks=1)
+        assert expected_chunks == returned_chunks
+
+
+    def test_grouper_two_chunks(self):
+        test_list = [1, 2, 3, 4, 5, 6]
+        expected_chunks = [[1, 2, 3], [4, 5, 6]]
+        returned_chunks = Tools.grouper(test_list, chunks=2)
+        assert expected_chunks == returned_chunks
+
+    def test_grouper_three_chunks(self):
+        test_list = [1, 2, 3, 4, 5, 6]
+        expected_chunks = [[1, 2], [3, 4], [5, 6]]
+        returned_chunks = Tools.grouper(test_list, chunks=3)
+        assert expected_chunks == returned_chunks
+
+
+    def test_grouper_one_chunk_odd_items(self):
+        test_list = [1, 2, 3, 4, 5, 6, 7]
+        expected_chunks = [[1, 2, 3, 4, 5, 6, 7]]
+        returned_chunks = Tools.grouper(test_list, chunks=1)
+        assert expected_chunks == returned_chunks
+
+    def test_grouper_two_chunks_seven_items(self):
+        test_list = [1, 2, 3, 4, 5, 6, 7]
+        expected_chunks = [[1, 2, 3, 4], [5, 6, 7]]
+        returned_chunks = Tools.grouper(test_list, chunks=2)
+        assert expected_chunks == returned_chunks
+
+    def test_grouper_three_chunks_ten_items(self):
+        test_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        expected_chunks = [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10]]
+        returned_chunks = Tools.grouper(test_list, chunks=3)
+        assert expected_chunks == returned_chunks
+
+
+    def test_grouper_chunksize_two(self):
+        test_list = [1, 2, 3, 4, 5, 6, 7]
+        expected_chunks = [[1, 2], [3, 4], [5, 6], [7]]
+        returned_chunks = Tools.grouper(test_list, chunksize=2)
+        assert expected_chunks == returned_chunks
+
+    def test_grouper_chunksize_five(self):
+        test_list = [1, 2, 3, 4, 5, 6, 7]
+        expected_chunks = [[1, 2, 3, 4, 5], [6, 7]]
+        returned_chunks = Tools.grouper(test_list, chunksize=5)
+        assert expected_chunks == returned_chunks
+
+    def test_grouper_chunksize_ten(self):
+        test_list = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+        expected_chunks = [[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]]
+        returned_chunks = Tools.grouper(test_list, chunksize=10)
+        assert expected_chunks == returned_chunks
+
+
+class TestSearchStringifier:
+
+    def test_searchstringifier_five_strings(self):
+        test_list = ['one', 'two', 'three', 'four', 'five']
+        expected_string = 'one,two,three,four,five'
+        returned_string = Tools.searchstringifier(test_list)
+        assert expected_string == returned_string
+
+    def test_searchstringifier_five_integers(self):
+        test_list = [1, 2, 3, 4, 5]
+        expected_string = '1,2,3,4,5'
+        returned_string = Tools.searchstringifier(test_list)
+        assert expected_string == returned_string
