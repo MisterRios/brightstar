@@ -299,7 +299,7 @@ class API(object):
         return self.get(warehouse_service_uri)
 
 
-class Tools:
+class Tools(object):
 
     def list_of_request_ranges(self, request_range):
         """
