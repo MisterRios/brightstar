@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='brightstar',
-      version='0.6',
+      version='0.6.1',
       description='Brightpearl API bindings for Python',
       url='https://github.com/MisterRios/brightstar',
       author='MisterRios',
