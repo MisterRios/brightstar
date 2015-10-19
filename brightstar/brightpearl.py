@@ -236,8 +236,34 @@ class API(object):
         
         return suppliers_data
 
+    def get_goods_notes(self, orders, note_type="in"):
+        """
+        Parameter
+        ---------
+        orders: list of orders to get goods notes for
+        note_type: string for goods note type
+            "in": (default value) returns goods-in notes
+            "out": returns goods-out notes
+        """
 
+        goods_note_uri_start ="{}warehouse-service/order/".format(self.uri)
+        goods_note_uri_end = "/goods-note/goods-{}".format(note_type)
+        if len(orders) > 200:
+            order_chunks = Tools.grouper(orders, chunksize=200)
+        else:
+            order_chunks = [orders]
 
+        all_responses = []
+        for chunk in order_chunks:
+            response = self.get(
+                "{}{}{}".format(
+                    goods_note_uri_start,
+                    Tools.searchstringifier(chunk),
+                    goods_note_uri_end
+                    )
+                )
+            all_responses.append(response['response'])
+        return all_responses
 
     def lookup_service(self, service, **kwargs):
         """
