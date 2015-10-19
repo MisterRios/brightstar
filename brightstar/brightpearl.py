@@ -1,5 +1,7 @@
-import requests, json
-
+import json
+import requests
+from itertools import zip_longest
+from math import ceil
 
 ALL_SERVICES = {
     "order": ("order", "order"),
@@ -235,40 +237,6 @@ class API(object):
         return suppliers_data
 
 
-    def list_of_request_ranges(self, request_range):
-        """
-        Used when OPTIONS cannot be requested.
-        Splits request range into 200 item chunks for use within
-        brightpearl request limit.
-        """
-        
-        request_numbers = request_range.split("-")
-
-        #for single item requests
-        if len(request_numbers) == 1:
-            return [request_range]
-
-        begin = int(request_numbers[0])
-        end = int(request_numbers[1])
-
-
-        request_ranges = list()
-        while begin < end:
-            uri_request = "-".join((str(begin), str(begin+199)))
-            begin += 200
-            request_ranges.append(uri_request)
-
-        request_ranges.pop()  
-
-        if begin == end:
-            last = str(begin)
-
-        else:
-            last = "-".join((str(begin-200), str(end)))
-
-        request_ranges.append(last)
-
-        return request_ranges
 
 
     def lookup_service(self, service, **kwargs):
@@ -321,7 +289,6 @@ class API(object):
     def product_lookup(self, kwargs):
         return self.lookup_service("product", **kwargs)
 
-
     def get_stock_levels(self, request_range):
         """
         returns stock levels for products
@@ -330,3 +297,89 @@ class API(object):
 
         warehouse_service_uri = "{}warehouse-service/product-availability/{}".format(self.uri, request_range)
         return self.get(warehouse_service_uri)
+
+
+class Tools:
+
+    def list_of_request_ranges(self, request_range):
+        """
+        Used when OPTIONS cannot be requested.
+        Splits request range into 200 item chunks for use within
+        brightpearl request limit.
+        """
+        
+        request_numbers = request_range.split("-")
+
+        #for single item requests
+        if len(request_numbers) == 1:
+            return [request_range]
+
+        begin = int(request_numbers[0])
+        end = int(request_numbers[1])
+
+
+        request_ranges = list()
+        while begin < end:
+            uri_request = "-".join((str(begin), str(begin+199)))
+            begin += 200
+            request_ranges.append(uri_request)
+
+        request_ranges.pop()  
+
+        if begin == end:
+            last = str(begin)
+
+        else:
+            last = "-".join((str(begin-200), str(end)))
+
+        request_ranges.append(last)
+
+        return request_ranges
+
+    def grouper(iterable, chunks=None, chunksize=None, fillvalue=None):
+        """
+        Parameters
+        ----------
+        iterable: iterable oblect to be split up 
+        chunks: integer denoting how many chunks to produce
+            default: None
+            notes: overrides chunksize if listed
+        chunksize: integer denoting max size of each chunk
+            default: None
+        fillvalue: string or integer to fill extra places in list with
+            default: None
+
+        Returns
+        -------
+        cleaned_list: list of cleaned lists with None fillvalue removed 
+        
+        Source
+        ------
+        https://docs.python.org/3/library/itertools.html#itertools-recipes
+        """
+
+        if chunks is None and chunksize is None:
+            raise KeyError("Please enter either chunks or chunksize Parameter")
+
+        if chunks is not None:
+            chunksize = int(ceil(len(iterable) / chunks))
+
+        args = [iter(iterable)] * chunksize
+        list_of_chunks = list(zip_longest(*args, fillvalue=fillvalue))
+        cleaned_list = [[item for item in one_list if item is not None] 
+                for one_list in list_of_chunks ]
+
+        return cleaned_list
+
+    def searchstringifier(a_list):
+        """
+        Parameter
+        ---------
+        a_list: list of items to convert into one comma separated string
+
+        Returns
+        -------
+        string comma separated
+        """
+
+        return ','.join([str(item) for item in a_list])
