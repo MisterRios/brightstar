@@ -278,7 +278,7 @@ class API(object):
             the_uri += '{}={}'.format(key, value)
             if len(kwargs) > 1:
                 the_uri += '&'
-
+        print(key)
         methods.add(key)       
         response = self.get(the_uri)
         
@@ -286,7 +286,7 @@ class API(object):
             
             line_items = response['response']['results'][0]
 
-            if "SKU" in methods or "EAN" in methods:
+            if "sku" in methods or "ean" in methods:
                 data = {
                     'product_id': line_items[0],
                     'product_name': line_items[1],
@@ -304,10 +304,10 @@ class API(object):
 
 
     def sku_lookup(self, sku_number):
-        return self.lookup_service("product", {"SKU": sku_number})
+        return self.lookup_service("product", sku=sku_number)
 
     def ean_lookup(self, ean_number):
-        return self.lookup_service("product", {"EAN": ean_number})
+        return self.lookup_service("product", ean=ean_number)
 
     def order_lookup(self, kwargs):
         return self.lookup_service("order", **kwargs)
