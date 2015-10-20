@@ -255,7 +255,7 @@ class API(object):
         else:
             order_chunks = [orders]
 
-        all_responses = []
+        all_responses = {}
         for chunk in order_chunks:
             response = self.get(
                 "{}{}{}".format(
@@ -264,7 +264,7 @@ class API(object):
                     goods_note_uri_end
                     )
                 )
-            all_responses.append(response['response'])
+            all_responses.update(response['response'])
         return all_responses
 
     def lookup_service(self, service, **kwargs):
