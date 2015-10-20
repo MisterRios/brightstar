@@ -249,7 +249,7 @@ class API(object):
         """
 
         goods_note_uri_start ="{}warehouse-service/order/".format(self.uri)
-        goods_note_uri_end = "/goods-note/goods-{}".format(note_type)
+        goods_note_uri_end = "/goods-note/goods-{}/".format(note_type)
         if len(orders) > 200:
             order_chunks = Tools.grouper(orders, chunksize=200)
         else:
