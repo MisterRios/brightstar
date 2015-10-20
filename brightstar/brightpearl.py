@@ -186,14 +186,14 @@ class API(object):
         
         return orders_data
 
-    def get_products_data(self, request_range, custom=None):
+    def get_products_data(self, request_range, custom=False):
 
         sales_uris = self.get_options_uris_by_service("products", request_range
             )
         products_data = list()
 
         for each_uri in sales_uris:
-            if custom is not None:
+            if custom is True:
                 each_uri += "?includeOptional=customFields"
             response_data = self.get(each_uri)
             for each_set_of_products in range(len(response_data['response'])):
