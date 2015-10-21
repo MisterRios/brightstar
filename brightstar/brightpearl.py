@@ -264,7 +264,7 @@ class API(object):
                     goods_note_uri_end
                     )
                 )
-            all_responses.update(response['response'])
+            all_responses.update(response.get('response', {})
         return all_responses
 
     def lookup_service(self, service, **kwargs):
