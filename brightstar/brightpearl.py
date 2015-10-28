@@ -300,7 +300,7 @@ class API(object):
                 }
                 return data
         else:
-            raise KeyError("response returned no data")
+            return []
 
         return response['response']['results']
 
