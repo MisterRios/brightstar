@@ -53,9 +53,9 @@ class API(object):
         calls the API to get the staff token
         """
 
-        
+
         authentication_string = json.dumps(
-                {"apiAccountCredentials" : 
+                {"apiAccountCredentials" :
                     {"emailAddress":username, "password":password }
                 }
                     )
@@ -92,7 +92,7 @@ class API(object):
         generate uri for certain services in ALL_SERVICE
         service and order_numbers must be strings.
         This method is essentially a shortcut for get_uri above.
-        """    
+        """
 
         return self.get_uri(ALL_SERVICES[service][0], ALL_SERVICES[service][1], reference_number)
 
@@ -102,7 +102,7 @@ class API(object):
         the function that actually sends the request
         and returns the data
         """
-        
+
         response = requests.get(the_uri, headers=self.headers)
         return response.json()
 
@@ -129,7 +129,7 @@ class API(object):
         used to request custom uris for orders and contacts:
         input range, output: range of uris for minimal number of
         api calls
-        """ 
+        """
 
         response = requests.options(the_uri, headers=self.headers)
         return response.json()
@@ -140,7 +140,7 @@ class API(object):
         """
 
         service_uri = "{0}{1}-service/{1}".format(self.uri, service)
-        return self.post(service_uri, data) 
+        return self.post(service_uri, data)
 
     def post_goods_out(self, order, data):
         """
@@ -162,7 +162,7 @@ class API(object):
         """
         # service uri also serves as stub for uri building at end of method
         service_uri = "{}{}-service".format(self.uri, ALL_SERVICES[service][0])
-        
+
         options_uri = "{}/{}/{}".format(service_uri, ALL_SERVICES[service][1], reference_number)
         options_data = self.options(options_uri)
         response_data = options_data['response']['getUris']
@@ -183,7 +183,7 @@ class API(object):
             response_data = self.get(each_uri)
             for each_set_of_sales in range(len(response_data['response'])):
                 orders_data.append(response_data['response'][each_set_of_sales])
-        
+
         return orders_data
 
     def get_products_data(self, request_range, custom=False):
@@ -198,7 +198,7 @@ class API(object):
             response_data = self.get(each_uri)
             for each_set_of_products in range(len(response_data['response'])):
                 products_data.append(response_data['response'][each_set_of_products])
-        
+
         return products_data
 
     def get_product_prices(self, request_range, price_list):
@@ -215,13 +215,13 @@ class API(object):
             response_data = self.get(price_list_uri)
             if 'errors' in response_data:
                 # return empty set if single item called with no prices
-                pass 
+                pass
             else:
                 for each_product in range(len(response_data['response'])):
                     if '1' in response_data['response'][each_product]['priceLists'][0]['quantityPrice']:
                         product_id = response_data['response'][each_product]['productId']
                         price = response_data['response'][each_product]['priceLists'][0]['quantityPrice']['1']
-                            
+
                         prices_data[product_id] = price
 
         return prices_data
@@ -235,7 +235,7 @@ class API(object):
         for each_uri in suppliers_uri:
             response_data = self.get(each_uri + "/supplier")
             suppliers_data.update(response_data['response'])
-        
+
         return suppliers_data
 
     def get_goods_notes(self, orders, note_type="in"):
@@ -275,17 +275,17 @@ class API(object):
         """
         methods = set()
         the_uri = '{0}{1}-service/{1}-search?'.format(self.uri, service)
-            
+
         for key, value in kwargs.items():
             the_uri += '{}={}'.format(key, value)
             if len(kwargs) > 1:
                 the_uri += '&'
         print(key)
-        methods.add(key)       
+        methods.add(key)
         response = self.get(the_uri)
-        
+
         if response['response']['results'] != []:
-            
+
             line_items = response['response']['results'][0]
 
             if "sku" in methods or "ean" in methods:
@@ -313,7 +313,7 @@ class API(object):
 
     def order_lookup(self, kwargs):
         return self.lookup_service("order", **kwargs)
-    
+
     def product_lookup(self, kwargs):
         return self.lookup_service("product", **kwargs)
 
@@ -335,7 +335,7 @@ class Tools(object):
         Splits request range into 200 item chunks for use within
         brightpearl request limit.
         """
-        
+
         request_numbers = request_range.split("-")
 
         #for single item requests
@@ -352,7 +352,7 @@ class Tools(object):
             begin += 200
             request_ranges.append(uri_request)
 
-        request_ranges.pop()  
+        request_ranges.pop()
 
         if begin == end:
             last = str(begin)
@@ -368,7 +368,7 @@ class Tools(object):
         """
         Parameters
         ----------
-        iterable: iterable oblect to be split up 
+        iterable: iterable oblect to be split up
         chunks: integer denoting how many chunks to produce
             default: None
             notes: overrides chunksize if listed
@@ -379,8 +379,8 @@ class Tools(object):
 
         Returns
         -------
-        cleaned_list: list of cleaned lists with None fillvalue removed 
-        
+        cleaned_list: list of cleaned lists with None fillvalue removed
+
         Source
         ------
         https://docs.python.org/3/library/itertools.html#itertools-recipes
@@ -394,7 +394,7 @@ class Tools(object):
 
         args = [iter(iterable)] * chunksize
         list_of_chunks = list(zip_longest(*args, fillvalue=fillvalue))
-        cleaned_list = [[item for item in one_list if item is not None] 
+        cleaned_list = [[item for item in one_list if item is not None]
                 for one_list in list_of_chunks ]
 
         return cleaned_list

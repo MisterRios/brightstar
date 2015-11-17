@@ -10,7 +10,7 @@ TEST_CONFIG = { 'datacentre': 'eu1',
                 'brightpearl_app_ref': 'testcompany_testapp',
                 'brightpearl_account_token': 'f4dtgpjl89z0aftgpj89z0a',
                 }
-                
+
 
 
 class InstantiationTest(unittest.TestCase):
@@ -19,12 +19,12 @@ class InstantiationTest(unittest.TestCase):
         self.instance = API(TEST_CONFIG)
 
     def test_successful_instance(self):
-        
+
         self.assertEqual(self.instance.datacentre, 'eu1')
         self.assertEqual(self.instance.api_version, '2.0.0')
         self.assertEqual(self.instance.account_code, 'testcompany')
         self.assertEqual(self.instance.app_ref, 'testcompany_testapp')
-        self.assertEqual(self.instance.authentication_token, 
+        self.assertEqual(self.instance.authentication_token,
             'f4dtgpjl89z0aftgpj89z0a')
 
         self.assertIsNone(self.instance.staff_authentication_token)
@@ -56,8 +56,8 @@ class BasicMethodsTest(unittest.TestCase):
 
     @responses.activate
     def test_get(self):
-        
-        responses.add(responses.GET, 
+
+        responses.add(responses.GET,
             'https://ws-eu1.brightpearl.com/2.0.0/testcompany/',
             body= json.dumps({"response": "get_test_body"}),
             status= 200,
@@ -70,7 +70,7 @@ class BasicMethodsTest(unittest.TestCase):
 
     @responses.activate
     def test_put(self):
-        responses.add(responses.PUT, 
+        responses.add(responses.PUT,
             'https://ws-eu1.brightpearl.com/2.0.0/testcompany/',
             body= json.dumps({"response": "put_it"}),
             status= 200,
@@ -83,7 +83,7 @@ class BasicMethodsTest(unittest.TestCase):
 
     @responses.activate
     def test_post(self):
-        responses.add(responses.POST, 
+        responses.add(responses.POST,
             'https://ws-eu1.brightpearl.com/2.0.0/testcompany/',
             body= json.dumps({"response": "postt_it"}),
             status= 200,
@@ -96,7 +96,7 @@ class BasicMethodsTest(unittest.TestCase):
 
     @responses.activate
     def test_options(self):
-        responses.add(responses.OPTIONS, 
+        responses.add(responses.OPTIONS,
             'https://ws-eu1.brightpearl.com/2.0.0/testcompany/',
             body= json.dumps({"response": "options"}),
             status= 200,
@@ -112,7 +112,7 @@ class GetMethodsTest(unittest.TestCase):
     def setUp(self):
         self.instance = API(TEST_CONFIG)
 
-    @responses.activate  
+    @responses.activate
     def test_get_brightpearl_staff_token(self):
 
         responses.add(
@@ -157,7 +157,7 @@ class GetMethodsTest(unittest.TestCase):
     def test_get_service_uri(self):
         order_uri = self.instance.get_service_uri("order")
         self.assertEqual(
-            order_uri, 
+            order_uri,
             self.instance.uri + "order-service/order/"
             )
 
@@ -196,7 +196,7 @@ class OrderSearchTest(unittest.TestCase):
 
     @responses.activate
     def test_order_lookup(self):
-        responses.add(responses.GET, 
+        responses.add(responses.GET,
             'https://ws-eu1.brightpearl.com/2.0.0/testcompany/order-service/order-search?orderTypeId=2',
             body= json.dumps(
                 {"reference": {},
@@ -215,7 +215,7 @@ class OrderSearchTest(unittest.TestCase):
 
         expected_results = [[100001, 2, 120], [100002, 2, 121]]
         searched_orders = self.instance.order_lookup({'orderTypeId': 2})
-        assert searched_orders == expected_results 
+        assert searched_orders == expected_results
 
 
 class TestGrouper:
