@@ -203,7 +203,14 @@ class API(object):
 
     def get_product_prices(self, request_range, price_list):
         """
-        returns a dictionary of product ids and prices
+        Parameters
+        ----------
+        request_range: string with product ids in the format "1-100" or "1,10"
+        price_list: integer for price list code
+
+        Returns
+        -------
+        prices_data: dictionary of product ids and prices
         """
 
         prices_uris = self.get_options_uris_by_service("prices", request_range)
