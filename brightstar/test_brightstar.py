@@ -295,6 +295,9 @@ class TestSearchStringifier:
 
 class TestGetProductPrices:
 
+    def setUp(self):
+        self.instance = API(TEST_CONFIG)
+
     @responses.activate
     def test_one_product_id_one_price(self):
         responses.add(responses.GET,
