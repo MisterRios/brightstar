@@ -201,7 +201,7 @@ class API(object):
 
         return products_data
 
-    def get_product_prices(self, request_range, price_list):
+    def get_product_prices(self, request_range, price_list=None):
         """
         Parameters
         ----------
@@ -218,19 +218,21 @@ class API(object):
         prices_data = dict()
 
         for each_uri in prices_uris:
-            price_list_uri = "{}/price-list/{}".format(each_uri, price_list)
-            response_data = self.get(price_list_uri)
+            if price_list is not None:
+                each_uri += "/price-list/{}".format(price_list)
+                print(each_uri)
+            response_data = self.get(each_uri)
             if 'errors' in response_data:
                 # return empty set if single item called with no prices
                 pass
             else:
-                for each_product in range(len(response_data['response'])):
-                    if '1' in response_data['response'][each_product]['priceLists'][0]['quantityPrice']:
-                        product_id = response_data['response'][each_product]['productId']
-                        price = response_data['response'][each_product]['priceLists'][0]['quantityPrice']['1']
-
-                        prices_data[product_id] = price
-
+                for each_product in response_data['response']:
+                    product_id = each_product['productId']
+                    prices_data.setdefault(product_id, {})
+                    for each_price in each_product['priceLists']:
+                        price_list = each_price.get("priceListId")
+                        price = each_price.get("quantityPrice", {}).get("1")
+                        prices_data[product_id][price_list] = price
         return prices_data
 
     def get_product_suppliers(self, request_range=""):
