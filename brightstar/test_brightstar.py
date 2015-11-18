@@ -293,17 +293,36 @@ class TestSearchStringifier:
         assert expected_string == returned_string
 
 
-class TestGetProductPrices:
+class TestGetProductPrices(unittest.TestCase):
 
     def setUp(self):
         self.instance = API(TEST_CONFIG)
 
     @responses.activate
     def test_one_product_id_one_price(self):
+        responses.add(responses.OPTIONS,
+            "{}{}{}".format(
+                "https://ws-eu1.brightpearl.com/public-api/testcompany/",
+                "product-service/product-price/",
+                "1001"
+            ),
+            body= json.dumps(
+                                {
+                                    "response": {
+                                        "getUris": [
+                                            "/product-price/1001",
+                                        ]
+                                    }
+                                }
+                            ),
+            status= 200,
+            match_querystring=True,
+        )
+
         responses.add(responses.GET,
             "{}{}{}".format(
                 "https://ws-eu1.brightpearl.com/public-api/testcompany/",
-                "product-service/product_price/",
+                "product-service/product-price/",
                 "1001/price-list/0"
             ),
             body= json.dumps(
@@ -318,7 +337,7 @@ class TestGetProductPrices:
                                     "currencyId": 1,
                                     "sku": "10001",
                                     "quantityPrice": {
-                                        "1": "10",
+                                        "1": "5.00",
                                     }
                                 }
                             ]
@@ -330,7 +349,7 @@ class TestGetProductPrices:
             match_querystring=True,
         )
 
-        test_product_id = 10001
+        test_product_id = 1001
         test_prices = self.instance.get_product_prices(test_product_id, price_list=0)
         expected_results = {1001: {0: "5.00"}}
 
