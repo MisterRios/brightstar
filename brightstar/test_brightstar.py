@@ -291,3 +291,72 @@ class TestSearchStringifier:
         expected_string = '1,2,3,4,5'
         returned_string = Tools.searchstringifier(test_list)
         assert expected_string == returned_string
+
+
+class TestGetProductPrices:
+
+    @responses.activate
+    def test_one_product_id_one_price(self):
+        test_product_id = 10001
+        test_prices = API.get_product_prices(test_product_id)
+        expected_results = {1001: {0: "5.00"}}
+
+        assert test_prices == expected_results
+
+    @responses.activate
+    def test_one_product_id_all_prices(self):
+        test_product_id = 10001
+        test_prices = API.get_product_prices(test_product_id)
+        expected_results = {1001: {0: "5.00", 1: "10.0", 2: "10.0"}}
+
+        assert test_prices == expected_results
+
+    @responses.activate
+    def test_many_product_ids_one_price(self):
+        test_product_ids = "10001-10002"
+        test_prices = API.get_product_prices(test_product_ids)
+        expected_results = {
+                1001: {0: "5.00"},
+                1002: {0: "6.00"},
+        }
+
+        assert test_prices == expected_results
+
+    @responses.activate
+    def test_many_product_ids_all_prices(self):
+        test_product_ids = "10001-10002"
+        test_prices = API.get_product_prices(test_product_ids)
+        test_product_ids = "10001-10002"
+        expected_results = {
+                1001: {0: "5.00", 1: "10.0", 2: "10.0"},
+                1002: {0: "6.00", 1: "10.0", 2: "10.0"},
+        }
+
+        assert test_prices == expected_results
+
+    @responses.activate
+    def test_split_product_ids_one_price(self):
+        test_product_ids = "10001-10004"
+        test_prices = API.get_product_prices(test_product_ids)
+        expected_results = {
+                1001: {0: "5.00"},
+                1002: {0: "6.00"},
+                1003: {0: "7.00"},
+                1004: {0: "8.00"},
+        }
+
+        assert test_prices == expected_results
+
+    @responses.activate
+    def test_split_product_ids_all_prices(self):
+        test_product_ids = "10001-10004"
+        test_prices = API.get_product_prices(test_product_ids)
+        expected_results = {
+                1001: {0: "5.00", 1: "10.0", 2: "10.0"},
+                1002: {0: "6.00", 1: "10.0", 2: "10.0"},
+                1003: {0: "7.00", 1: "10.0", 2: "10.0"},
+                1004: {0: "8.00", 1: "10.0", 2: "10.0"},
+        }
+
+        assert test_prices == expected_results
+
