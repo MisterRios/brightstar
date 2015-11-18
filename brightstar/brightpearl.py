@@ -216,9 +216,11 @@ class API(object):
         prices_uris = self.get_options_uris_by_service("prices", request_range)
 
         prices_data = dict()
-
+        print(prices_uris)
+        print(price_list)
         for each_uri in prices_uris:
             if price_list is not None:
+                print(price_list)
                 each_uri += "/price-list/{}".format(price_list)
                 print(each_uri)
             response_data = self.get(each_uri)
@@ -230,9 +232,9 @@ class API(object):
                     product_id = each_product['productId']
                     prices_data.setdefault(product_id, {})
                     for each_price in each_product['priceLists']:
-                        price_list = each_price.get("priceListId")
+                        price_list_code = each_price.get("priceListId")
                         price = each_price.get("quantityPrice", {}).get("1")
-                        prices_data[product_id][price_list] = price
+                        prices_data[product_id][price_list_code] = price
         return prices_data
 
     def get_product_suppliers(self, request_range=""):
