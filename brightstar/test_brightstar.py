@@ -258,7 +258,6 @@ class TestGrouper:
         returned_chunks = Tools.grouper(test_list, chunks=3)
         assert expected_chunks == returned_chunks
 
-
     def test_grouper_chunksize_two(self):
         test_list = [1, 2, 3, 4, 5, 6, 7]
         expected_chunks = [[1, 2], [3, 4], [5, 6], [7]]
@@ -318,7 +317,6 @@ class TestGetProductPrices(unittest.TestCase):
             status= 200,
             match_querystring=True,
         )
-
         responses.add(responses.GET,
             "{}{}{}".format(
                 "https://ws-eu1.brightpearl.com/public-api/testcompany/",
@@ -357,15 +355,136 @@ class TestGetProductPrices(unittest.TestCase):
 
     @responses.activate
     def test_one_product_id_all_prices(self):
-        test_product_id = 10001
+        responses.add(responses.OPTIONS,
+            "{}{}{}".format(
+                "https://ws-eu1.brightpearl.com/public-api/testcompany/",
+                "product-service/product-price/",
+                "1001"
+            ),
+            body= json.dumps(
+                                {
+                                    "response": {
+                                        "getUris": [
+                                            "/product-price/1001",
+                                        ]
+                                    }
+                                }
+                            ),
+            status= 200,
+        )
+        responses.add(responses.GET,
+            "{}{}{}".format(
+                "https://ws-eu1.brightpearl.com/public-api/testcompany/",
+                "product-service/product-price/",
+                "1001"
+            ),
+            body= json.dumps(
+                {
+                    "response": [
+                        {
+                            "productId": 1001,
+                            "priceLists": [
+                                {
+                                    "priceListId": 0,
+                                    "currencyCode": "EUR",
+                                    "currencyId": 1,
+                                    "sku": "10001",
+                                    "quantityPrice": {
+                                        "1": "5.00",
+                                    }
+                                },{
+                                    "priceListId": 1,
+                                    "currencyCode": "EUR",
+                                    "currencyId": 1,
+                                    "sku": "10001",
+                                    "quantityPrice": {
+                                        "1": "10.00",
+                                    }
+                                },{
+                                    "priceListId": 2,
+                                    "currencyCode": "EUR",
+                                    "currencyId": 1,
+                                    "sku": "10001",
+                                    "quantityPrice": {
+                                        "1": "10.00",
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ),
+            status= 200,
+        )
+
+        test_product_id = 1001
         test_prices = self.instance.get_product_prices(test_product_id)
-        expected_results = {1001: {0: "5.00", 1: "10.0", 2: "10.0"}}
+        expected_results = {1001: {0: "5.00", 1: "10.00", 2: "10.00"}}
 
         assert test_prices == expected_results
 
     @responses.activate
     def test_many_product_ids_one_price(self):
-        test_product_ids = "10001-10002"
+        responses.add(responses.OPTIONS,
+            "{}{}{}".format(
+                "https://ws-eu1.brightpearl.com/public-api/testcompany/",
+                "product-service/product-price/",
+                "1001-1002"
+            ),
+            body= json.dumps(
+                                {
+                                    "response": {
+                                        "getUris": [
+                                            "/product-price/1001-1002",
+                                        ]
+                                    }
+                                }
+                            ),
+            status= 200,
+        )
+        responses.add(responses.GET,
+            "{}{}{}".format(
+                "https://ws-eu1.brightpearl.com/public-api/testcompany/",
+                "product-service/product-price/",
+                "1001-1002/price-list/0"
+            ),
+            body= json.dumps(
+                {
+                    "response": [
+                        {
+                            "productId": 1001,
+                            "priceLists": [
+                                {
+                                    "priceListId": 0,
+                                    "currencyCode": "EUR",
+                                    "currencyId": 1,
+                                    "sku": "10001",
+                                    "quantityPrice": {
+                                        "1": "5.00",
+                                    }
+                                }
+                            ]
+                        },{
+                            "productId": 1002,
+                            "priceLists": [
+                                {
+                                    "priceListId": 0,
+                                    "currencyCode": "EUR",
+                                    "currencyId": 1,
+                                    "sku": "10001",
+                                    "quantityPrice": {
+                                        "1": "6.00",
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ),
+            status= 200,
+        )
+
+        test_product_ids = "1001-1002"
         test_prices = self.instance.get_product_prices(test_product_ids, price_list=0)
         expected_results = {
                 1001: {0: "5.00"},
@@ -376,18 +495,154 @@ class TestGetProductPrices(unittest.TestCase):
 
     @responses.activate
     def test_many_product_ids_all_prices(self):
-        test_product_ids = "10001-10002"
+        responses.add(responses.OPTIONS,
+            "{}{}{}".format(
+                "https://ws-eu1.brightpearl.com/public-api/testcompany/",
+                "product-service/product-price/",
+                "1001-1002"
+            ),
+            body= json.dumps(
+                                {
+                                    "response": {
+                                        "getUris": [
+                                            "/product-price/1001-1002",
+                                        ]
+                                    }
+                                }
+                            ),
+            status= 200,
+        )
+        responses.add(responses.GET,
+            "{}{}{}".format(
+                "https://ws-eu1.brightpearl.com/public-api/testcompany/",
+                "product-service/product-price/",
+                "1001-1002"
+            ),
+            body= json.dumps(
+                {
+                    "response": [
+                        {
+                            "productId": 1001,
+                            "priceLists": [
+                                {
+                                    "priceListId": 0,
+                                    "currencyCode": "EUR",
+                                    "currencyId": 1,
+                                    "sku": "10001",
+                                    "quantityPrice": {
+                                        "1": "5.00",
+                                    }
+                                },{
+                                    "priceListId": 1,
+                                    "currencyCode": "EUR",
+                                    "currencyId": 1,
+                                    "sku": "10001",
+                                    "quantityPrice": {
+                                        "1": "10.00",
+                                    }
+                                },{
+                                    "priceListId": 2,
+                                    "currencyCode": "EUR",
+                                    "currencyId": 1,
+                                    "sku": "10001",
+                                    "quantityPrice": {
+                                        "1": "10.00",
+                                    }
+                                }
+                            ]
+                        },{
+                            "productId": 1002,
+                            "priceLists": [
+                                {
+                                    "priceListId": 0,
+                                    "currencyCode": "EUR",
+                                    "currencyId": 1,
+                                    "sku": "10001",
+                                    "quantityPrice": {
+                                        "1": "6.00",
+                                    }
+                                },{
+                                    "priceListId": 1,
+                                    "currencyCode": "EUR",
+                                    "currencyId": 1,
+                                    "sku": "10001",
+                                    "quantityPrice": {
+                                        "1": "10.00",
+                                    }
+                                },{
+                                    "priceListId": 2,
+                                    "currencyCode": "EUR",
+                                    "currencyId": 1,
+                                    "sku": "10001",
+                                    "quantityPrice": {
+                                        "1": "10.00",
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ),
+            status= 200,
+        )
+
+        test_product_ids = "1001-1002"
         test_prices = self.instance.get_product_prices(test_product_ids)
-        test_product_ids = "10001-10002"
         expected_results = {
-                1001: {0: "5.00", 1: "10.0", 2: "10.0"},
-                1002: {0: "6.00", 1: "10.0", 2: "10.0"},
+                1001: {0: "5.00", 1: "10.00", 2: "10.00"},
+                1002: {0: "6.00", 1: "10.00", 2: "10.00"},
         }
 
         assert test_prices == expected_results
 
     @responses.activate
     def test_split_product_ids_one_price(self):
+        responses.add(responses.OPTIONS,
+            "{}{}{}".format(
+                "https://ws-eu1.brightpearl.com/public-api/testcompany/",
+                "product-service/product-price/",
+                "1001"
+            ),
+            body= json.dumps(
+                                {
+                                    "response": {
+                                        "getUris": [
+                                            "/product-price/1001",
+                                        ]
+                                    }
+                                }
+                            ),
+            status= 200,
+        )
+        responses.add(responses.GET,
+            "{}{}{}".format(
+                "https://ws-eu1.brightpearl.com/public-api/testcompany/",
+                "product-service/product-price/",
+                "1001/price-list/0"
+            ),
+            body= json.dumps(
+                {
+                    "response": [
+                        {
+                            "productId": 1001,
+                            "priceLists": [
+                                {
+                                    "priceListId": 0,
+                                    "currencyCode": "EUR",
+                                    "currencyId": 1,
+                                    "sku": "10001",
+                                    "quantityPrice": {
+                                        "1": "5.00",
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ),
+            status= 200,
+        )
+
         test_product_ids = "10001-10004"
         test_prices = self.instance.get_product_prices(test_product_ids, price_list=0)
         expected_results = {
@@ -401,13 +656,59 @@ class TestGetProductPrices(unittest.TestCase):
 
     @responses.activate
     def test_split_product_ids_all_prices(self):
+        responses.add(responses.OPTIONS,
+            "{}{}{}".format(
+                "https://ws-eu1.brightpearl.com/public-api/testcompany/",
+                "product-service/product-price/",
+                "1001"
+            ),
+            body= json.dumps(
+                                {
+                                    "response": {
+                                        "getUris": [
+                                            "/product-price/1001",
+                                        ]
+                                    }
+                                }
+                            ),
+            status= 200,
+        )
+        responses.add(responses.GET,
+            "{}{}{}".format(
+                "https://ws-eu1.brightpearl.com/public-api/testcompany/",
+                "product-service/product-price/",
+                "1001/price-list/0"
+            ),
+            body= json.dumps(
+                {
+                    "response": [
+                        {
+                            "productId": 1001,
+                            "priceLists": [
+                                {
+                                    "priceListId": 0,
+                                    "currencyCode": "EUR",
+                                    "currencyId": 1,
+                                    "sku": "10001",
+                                    "quantityPrice": {
+                                        "1": "5.00",
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ),
+            status= 200,
+        )
+
         test_product_ids = "10001-10004"
         test_prices = self.instance.get_product_prices(test_product_ids)
         expected_results = {
-                1001: {0: "5.00", 1: "10.0", 2: "10.0"},
-                1002: {0: "6.00", 1: "10.0", 2: "10.0"},
-                1003: {0: "7.00", 1: "10.0", 2: "10.0"},
-                1004: {0: "8.00", 1: "10.0", 2: "10.0"},
+                1001: {0: "5.00", 1: "10.00", 2: "10.00"},
+                1002: {0: "6.00", 1: "10.00", 2: "10.00"},
+                1003: {0: "7.00", 1: "10.00", 2: "10.00"},
+                1004: {0: "8.00", 1: "10.00", 2: "10.00"},
         }
 
         assert test_prices == expected_results
