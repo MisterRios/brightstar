@@ -331,7 +331,7 @@ class TestGetProductPrices:
         )
 
         test_product_id = 10001
-        test_prices = API.get_product_prices(test_product_id, price_list=0)
+        test_prices = self.instance.get_product_prices(test_product_id, price_list=0)
         expected_results = {1001: {0: "5.00"}}
 
         assert test_prices == expected_results
@@ -339,7 +339,7 @@ class TestGetProductPrices:
     @responses.activate
     def test_one_product_id_all_prices(self):
         test_product_id = 10001
-        test_prices = API.get_product_prices(test_product_id)
+        test_prices = self.instance.get_product_prices(test_product_id)
         expected_results = {1001: {0: "5.00", 1: "10.0", 2: "10.0"}}
 
         assert test_prices == expected_results
@@ -347,7 +347,7 @@ class TestGetProductPrices:
     @responses.activate
     def test_many_product_ids_one_price(self):
         test_product_ids = "10001-10002"
-        test_prices = API.get_product_prices(test_product_ids, price_list=0)
+        test_prices = self.instance.get_product_prices(test_product_ids, price_list=0)
         expected_results = {
                 1001: {0: "5.00"},
                 1002: {0: "6.00"},
@@ -358,7 +358,7 @@ class TestGetProductPrices:
     @responses.activate
     def test_many_product_ids_all_prices(self):
         test_product_ids = "10001-10002"
-        test_prices = API.get_product_prices(test_product_ids)
+        test_prices = self.instance.get_product_prices(test_product_ids)
         test_product_ids = "10001-10002"
         expected_results = {
                 1001: {0: "5.00", 1: "10.0", 2: "10.0"},
@@ -370,7 +370,7 @@ class TestGetProductPrices:
     @responses.activate
     def test_split_product_ids_one_price(self):
         test_product_ids = "10001-10004"
-        test_prices = API.get_product_prices(test_product_ids, price_list=0)
+        test_prices = self.instance.get_product_prices(test_product_ids, price_list=0)
         expected_results = {
                 1001: {0: "5.00"},
                 1002: {0: "6.00"},
@@ -383,7 +383,7 @@ class TestGetProductPrices:
     @responses.activate
     def test_split_product_ids_all_prices(self):
         test_product_ids = "10001-10004"
-        test_prices = API.get_product_prices(test_product_ids)
+        test_prices = self.instance.get_product_prices(test_product_ids)
         expected_results = {
                 1001: {0: "5.00", 1: "10.0", 2: "10.0"},
                 1002: {0: "6.00", 1: "10.0", 2: "10.0"},
