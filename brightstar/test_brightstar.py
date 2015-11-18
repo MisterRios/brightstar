@@ -601,13 +601,14 @@ class TestGetProductPrices(unittest.TestCase):
             "{}{}{}".format(
                 "https://ws-eu1.brightpearl.com/public-api/testcompany/",
                 "product-service/product-price/",
-                "1001"
+                "1001-1004"
             ),
             body= json.dumps(
                                 {
                                     "response": {
                                         "getUris": [
-                                            "/product-price/1001",
+                                            "/product-price/1001-1002",
+                                            "/product-price/1003-1004",
                                         ]
                                     }
                                 }
@@ -618,7 +619,7 @@ class TestGetProductPrices(unittest.TestCase):
             "{}{}{}".format(
                 "https://ws-eu1.brightpearl.com/public-api/testcompany/",
                 "product-service/product-price/",
-                "1001/price-list/0"
+                "1001-1002/price-list/0"
             ),
             body= json.dumps(
                 {
@@ -636,6 +637,60 @@ class TestGetProductPrices(unittest.TestCase):
                                     }
                                 }
                             ]
+                        },{
+                            "productId": 1002,
+                            "priceLists": [
+                                {
+                                    "priceListId": 0,
+                                    "currencyCode": "EUR",
+                                    "currencyId": 1,
+                                    "sku": "10002",
+                                    "quantityPrice": {
+                                        "1": "6.00",
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ),
+            status= 200,
+        )
+        responses.add(responses.GET,
+            "{}{}{}".format(
+                "https://ws-eu1.brightpearl.com/public-api/testcompany/",
+                "product-service/product-price/",
+                "1003-1004/price-list/0"
+            ),
+            body= json.dumps(
+                {
+                    "response": [
+                        {
+                            "productId": 1003,
+                            "priceLists": [
+                                {
+                                    "priceListId": 0,
+                                    "currencyCode": "EUR",
+                                    "currencyId": 1,
+                                    "sku": "10003",
+                                    "quantityPrice": {
+                                        "1": "7.00",
+                                    }
+                                }
+                            ]
+                        },{
+                            "productId": 1004,
+                            "priceLists": [
+                                {
+                                    "priceListId": 0,
+                                    "currencyCode": "EUR",
+                                    "currencyId": 1,
+                                    "sku": "10004",
+                                    "quantityPrice": {
+                                        "1": "8.00",
+                                    }
+                                }
+                            ]
                         }
                     ]
                 }
@@ -643,7 +698,7 @@ class TestGetProductPrices(unittest.TestCase):
             status= 200,
         )
 
-        test_product_ids = "10001-10004"
+        test_product_ids = "1001-1004"
         test_prices = self.instance.get_product_prices(test_product_ids, price_list=0)
         expected_results = {
                 1001: {0: "5.00"},
@@ -660,13 +715,14 @@ class TestGetProductPrices(unittest.TestCase):
             "{}{}{}".format(
                 "https://ws-eu1.brightpearl.com/public-api/testcompany/",
                 "product-service/product-price/",
-                "1001"
+                "1001-1004"
             ),
             body= json.dumps(
                                 {
                                     "response": {
                                         "getUris": [
-                                            "/product-price/1001",
+                                            "/product-price/1001-1002",
+                                            "/product-price/1003-1004",
                                         ]
                                     }
                                 }
@@ -677,7 +733,7 @@ class TestGetProductPrices(unittest.TestCase):
             "{}{}{}".format(
                 "https://ws-eu1.brightpearl.com/public-api/testcompany/",
                 "product-service/product-price/",
-                "1001/price-list/0"
+                "1001-1002/price-list/0"
             ),
             body= json.dumps(
                 {
@@ -693,6 +749,124 @@ class TestGetProductPrices(unittest.TestCase):
                                     "quantityPrice": {
                                         "1": "5.00",
                                     }
+                                },{
+                                    "priceListId": 1,
+                                    "currencyCode": "EUR",
+                                    "currencyId": 1,
+                                    "sku": "10001",
+                                    "quantityPrice": {
+                                        "1": "10.00",
+                                    }
+                                },{
+                                    "priceListId": 2,
+                                    "currencyCode": "EUR",
+                                    "currencyId": 1,
+                                    "sku": "10001",
+                                    "quantityPrice": {
+                                        "1": "10.00",
+                                    }
+                                }
+                            ]
+                        },{
+                            "productId": 1002,
+                            "priceLists": [
+                                {
+                                    "priceListId": 0,
+                                    "currencyCode": "EUR",
+                                    "currencyId": 1,
+                                    "sku": "10001",
+                                    "quantityPrice": {
+                                        "1": "6.00",
+                                    }
+                                },{
+                                    "priceListId": 1,
+                                    "currencyCode": "EUR",
+                                    "currencyId": 1,
+                                    "sku": "10001",
+                                    "quantityPrice": {
+                                        "1": "10.00",
+                                    }
+                                },{
+                                    "priceListId": 2,
+                                    "currencyCode": "EUR",
+                                    "currencyId": 1,
+                                    "sku": "10001",
+                                    "quantityPrice": {
+                                        "1": "10.00",
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ),
+            status= 200,
+        )
+        responses.add(responses.GET,
+            "{}{}{}".format(
+                "https://ws-eu1.brightpearl.com/public-api/testcompany/",
+                "product-service/product-price/",
+                "1003-1004/price-list/0"
+            ),
+            body= json.dumps(
+                {
+                    "response": [
+                        {
+                            "productId": 1003,
+                            "priceLists": [
+                                {
+                                    "priceListId": 0,
+                                    "currencyCode": "EUR",
+                                    "currencyId": 1,
+                                    "sku": "10003",
+                                    "quantityPrice": {
+                                        "1": "7.00",
+                                    }
+                                },{
+                                    "priceListId": 1,
+                                    "currencyCode": "EUR",
+                                    "currencyId": 1,
+                                    "sku": "10003",
+                                    "quantityPrice": {
+                                        "1": "10.00",
+                                    }
+                                },{
+                                    "priceListId": 2,
+                                    "currencyCode": "EUR",
+                                    "currencyId": 1,
+                                    "sku": "10003",
+                                    "quantityPrice": {
+                                        "1": "10.00",
+                                    }
+                                }
+                            ]
+                        },{
+                            "productId": 1004,
+                            "priceLists": [
+                                {
+                                    "priceListId": 0,
+                                    "currencyCode": "EUR",
+                                    "currencyId": 1,
+                                    "sku": "10004",
+                                    "quantityPrice": {
+                                        "1": "8.00",
+                                    }
+                                },{
+                                    "priceListId": 1,
+                                    "currencyCode": "EUR",
+                                    "currencyId": 1,
+                                    "sku": "10004",
+                                    "quantityPrice": {
+                                        "1": "10.00",
+                                    }
+                                },{
+                                    "priceListId": 2,
+                                    "currencyCode": "EUR",
+                                    "currencyId": 1,
+                                    "sku": "10004",
+                                    "quantityPrice": {
+                                        "1": "10.00",
+                                    }
                                 }
                             ]
                         }
@@ -702,8 +876,9 @@ class TestGetProductPrices(unittest.TestCase):
             status= 200,
         )
 
-        test_product_ids = "10001-10004"
-        test_prices = self.instance.get_product_prices(test_product_ids)
+
+        test_product_ids = "1001-1004"
+        test_prices = self.instance.get_product_prices(test_product_ids, price_list=0)
         expected_results = {
                 1001: {0: "5.00", 1: "10.00", 2: "10.00"},
                 1002: {0: "6.00", 1: "10.00", 2: "10.00"},
