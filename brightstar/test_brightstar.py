@@ -5,7 +5,7 @@ from brightpearl import API
 from brightpearl import Tools
 
 TEST_CONFIG = { 'datacentre': 'eu1',
-                'api_version': '2.0.0',
+                'api_version': 'public-api',
                 'account_code': 'testcompany',
                 'brightpearl_app_ref': 'testcompany_testapp',
                 'brightpearl_account_token': 'f4dtgpjl89z0aftgpj89z0a',
@@ -21,7 +21,7 @@ class InstantiationTest(unittest.TestCase):
     def test_successful_instance(self):
 
         self.assertEqual(self.instance.datacentre, 'eu1')
-        self.assertEqual(self.instance.api_version, '2.0.0')
+        self.assertEqual(self.instance.api_version, 'public-api')
         self.assertEqual(self.instance.account_code, 'testcompany')
         self.assertEqual(self.instance.app_ref, 'testcompany_testapp')
         self.assertEqual(self.instance.authentication_token,
@@ -35,7 +35,7 @@ class InstantiationTest(unittest.TestCase):
             )
 
         self.assertEqual(self.instance.uri,
-                'https://ws-eu1.brightpearl.com/2.0.0/testcompany/'
+                'https://ws-eu1.brightpearl.com/public-api/testcompany/'
                 )
 
         self.assertEqual(self.instance.authentication_uri,
@@ -58,7 +58,7 @@ class BasicMethodsTest(unittest.TestCase):
     def test_get(self):
 
         responses.add(responses.GET,
-            'https://ws-eu1.brightpearl.com/2.0.0/testcompany/',
+            'https://ws-eu1.brightpearl.com/public-api/testcompany/',
             body= json.dumps({"response": "get_test_body"}),
             status= 200,
                 )
@@ -71,7 +71,7 @@ class BasicMethodsTest(unittest.TestCase):
     @responses.activate
     def test_put(self):
         responses.add(responses.PUT,
-            'https://ws-eu1.brightpearl.com/2.0.0/testcompany/',
+            'https://ws-eu1.brightpearl.com/public-api/testcompany/',
             body= json.dumps({"response": "put_it"}),
             status= 200,
                 )
@@ -84,7 +84,7 @@ class BasicMethodsTest(unittest.TestCase):
     @responses.activate
     def test_post(self):
         responses.add(responses.POST,
-            'https://ws-eu1.brightpearl.com/2.0.0/testcompany/',
+            'https://ws-eu1.brightpearl.com/public-api/testcompany/',
             body= json.dumps({"response": "postt_it"}),
             status= 200,
                 )
@@ -97,7 +97,7 @@ class BasicMethodsTest(unittest.TestCase):
     @responses.activate
     def test_options(self):
         responses.add(responses.OPTIONS,
-            'https://ws-eu1.brightpearl.com/2.0.0/testcompany/',
+            'https://ws-eu1.brightpearl.com/public-api/testcompany/',
             body= json.dumps({"response": "options"}),
             status= 200,
                 )
@@ -139,18 +139,18 @@ class GetMethodsTest(unittest.TestCase):
         product_251_uri = self.instance.get_uri("product", "product", 251)
         self.assertEqual(
             product_251_uri,
-            "https://ws-eu1.brightpearl.com/2.0.0/testcompany/product-service/product/251")
+            "https://ws-eu1.brightpearl.com/public-api/testcompany/product-service/product/251")
 
         order_500500_uri = self.instance.get_uri("order", "order", "500500-500570")
         self.assertEqual(
             order_500500_uri,
-            "https://ws-eu1.brightpearl.com/2.0.0/testcompany/order-service/order/500500-500570"
+            "https://ws-eu1.brightpearl.com/public-api/testcompany/order-service/order/500500-500570"
             )
 
         base_contact_uri = self.instance.get_uri("contact", "contact")
         self.assertEqual(
             base_contact_uri,
-            "https://ws-eu1.brightpearl.com/2.0.0/testcompany/contact-service/contact/"
+            "https://ws-eu1.brightpearl.com/public-api/testcompany/contact-service/contact/"
             )
 
 
@@ -197,7 +197,7 @@ class OrderSearchTest(unittest.TestCase):
     @responses.activate
     def test_order_lookup(self):
         responses.add(responses.GET,
-            'https://ws-eu1.brightpearl.com/2.0.0/testcompany/order-service/order-search?orderTypeId=2',
+            'https://ws-eu1.brightpearl.com/public-api/testcompany/order-service/order-search?orderTypeId=2',
             body= json.dumps(
                 {"reference": {},
                  "response": {
@@ -297,8 +297,38 @@ class TestGetProductPrices:
 
     @responses.activate
     def test_one_product_id_one_price(self):
+        responses.add(responses.GET,
+            "{}{}{}".format(
+                "https://ws-eu1.brightpearl.com/public-api/testcompany/",
+                "product-service/product_price/",
+                "1001/price-list/0"
+            ),
+            body= json.dumps(
+                {
+                    "response": [
+                        {
+                            "productId": 1001,
+                            "priceLists": [
+                                {
+                                    "priceListId": 0,
+                                    "currencyCode": "EUR",
+                                    "currencyId": 1,
+                                    "sku": "10001",
+                                    "quantityPrice": {
+                                        "1": "10",
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ),
+            status= 200,
+            match_querystring=True,
+        )
+
         test_product_id = 10001
-        test_prices = API.get_product_prices(test_product_id)
+        test_prices = API.get_product_prices(test_product_id, price_list=0)
         expected_results = {1001: {0: "5.00"}}
 
         assert test_prices == expected_results
@@ -314,7 +344,7 @@ class TestGetProductPrices:
     @responses.activate
     def test_many_product_ids_one_price(self):
         test_product_ids = "10001-10002"
-        test_prices = API.get_product_prices(test_product_ids)
+        test_prices = API.get_product_prices(test_product_ids, price_list=0)
         expected_results = {
                 1001: {0: "5.00"},
                 1002: {0: "6.00"},
@@ -337,7 +367,7 @@ class TestGetProductPrices:
     @responses.activate
     def test_split_product_ids_one_price(self):
         test_product_ids = "10001-10004"
-        test_prices = API.get_product_prices(test_product_ids)
+        test_prices = API.get_product_prices(test_product_ids, price_list=0)
         expected_results = {
                 1001: {0: "5.00"},
                 1002: {0: "6.00"},
