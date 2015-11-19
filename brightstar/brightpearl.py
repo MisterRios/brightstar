@@ -216,8 +216,6 @@ class API(object):
         prices_uris = self.get_options_uris_by_service("prices", request_range)
 
         prices_data = dict()
-        print(prices_uris)
-        print(price_list)
         for each_uri in prices_uris:
             if price_list is not None:
                 print(price_list)
